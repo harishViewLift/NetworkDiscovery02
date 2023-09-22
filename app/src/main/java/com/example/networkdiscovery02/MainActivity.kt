@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     val LOCAL_DOMAIN = "local."
     val SERVICES_DOMAIN = "_services._dns-sd._udp"
 
+    private val SERVICE_TYPE = "_mynsd._tcp"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val handler = Handler()
 
         val client: NsdClientManager? = NsdClientManager.getInstance(this, handler)
-        client?.searchNsdServer(SERVICES_DOMAIN)
+        client?.searchNsdServer(SERVICE_TYPE)
 //        client?.searchNsdServer("_airplay._tcp.")
 
 //        nsdServerManager = NsdServerManager.getInstance(this)
