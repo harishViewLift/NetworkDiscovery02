@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val handler = Handler()
 
         val client: NsdClientManager? = NsdClientManager.getInstance(this, handler)
-        client?.searchNsdServer(SERVICE_TYPE)
+        client?.searchNsdServer(SERVICES_DOMAIN)
 //        client?.searchNsdServer("_airplay._tcp.")
 
 //        nsdServerManager = NsdServerManager.getInstance(this)
