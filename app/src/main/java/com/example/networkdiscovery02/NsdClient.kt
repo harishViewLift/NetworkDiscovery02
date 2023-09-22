@@ -9,19 +9,16 @@ import android.os.Message
 import android.util.Log
 
 /**
- * @author why
- * @date 2019.04.28
- */
-class NsdClient
-/**
  * @param context: context object
  * @param serviceName client scans the specified address
  * @param iServerFound callback
- */(
+ */
+class NsdClient(
     private val mContext: Context,
     private val mServiceName: String,
     private val mIServerFound: IServerFound
 ) {
+
     private val NSD_SERVER_TYPE = "_http._tcp."
     private var mDiscoveryListener: DiscoveryListener? = null
     private var mResolverListener: NsdManager.ResolveListener? = null
@@ -29,6 +26,7 @@ class NsdClient
     private var mHandler: Handler? = null
     private val discoveryList = ArrayList<String>()
     private val resolveList = ArrayList<String>()
+
     fun startNSDClient(handler: Handler?) {
         object : Thread() {
             override fun run() {

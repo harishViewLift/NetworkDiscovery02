@@ -1,6 +1,7 @@
 package com.example.networkdiscovery02
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -17,12 +18,23 @@ class MainActivity : AppCompatActivity() {
      */
     private var nsd_server_name = "WhySystem"
     private val nsd_server_port = 8088
+    val LOCAL_DOMAIN = "local."
+    val SERVICES_DOMAIN = "_services._dns-sd._udp"
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initUI()
-        nsdServerManager = NsdServerManager.getInstance(this)
-        nsdServerManager!!.registerNsdServer(nsd_server_name)
+
+        val handler = Handler()
+
+        val client: NsdClientManager? = NsdClientManager.getInstance(this, handler)
+        client?.searchNsdServer(SERVICES_DOMAIN)
+//        client?.searchNsdServer("_airplay._tcp.")
+
+//        nsdServerManager = NsdServerManager.getInstance(this)
+//        nsdServerManager!!.registerNsdServer(nsd_server_name)
     }
 
     private fun initUI() {
