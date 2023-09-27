@@ -7,6 +7,10 @@ import android.net.nsd.NsdServiceInfo
 import android.os.Handler
 import android.os.Message
 import android.util.Log
+import java.io.IOException
+import java.net.InetAddress
+import java.net.UnknownHostException
+
 
 /**
  * @param context: context object
@@ -19,9 +23,10 @@ class NsdClient(
     private val mIServerFound: IServerFound
 ) {
 
-    private val NSD_SERVER_TYPE = "_http._tcp."
+    // Network Service Discovery
+    private val NSD_SERVER_TYPE = "_airplay._tcp."
+//    private val NSD_SERVER_TYPE = "_http._tcp."
     private var mDiscoveryListener: DiscoveryListener? = null
-    private var mResolverListener: NsdManager.ResolveListener? = null
     var mNsdManager: NsdManager? = null
     private var mHandler: Handler? = null
     private val discoveryList = ArrayList<String>()
@@ -33,7 +38,7 @@ class NsdClient(
                 mHandler = handler
                 mNsdManager = mContext.getSystemService(Context.NSD_SERVICE) as NsdManager
                 initializeDiscoveryListener() //Initialize the listener
-                initializeResolveListener() //Initialize the parser
+
                 mNsdManager!!.discoverServices(
                     NSD_SERVER_TYPE,
                     NsdManager.PROTOCOL_DNS_SD,
@@ -74,38 +79,31 @@ class NsdClient(
                 Log.e(TAG, "onServiceFound: $serviceInfo")
                 discoveryList.add(serviceInfo.toString())
                 //According to the defined name of our server, specify the NsdServiceInfo to be parsed
-                if (serviceInfo.serviceName == mServiceName) {
+                    var mResolverListener: NsdManager.ResolveListener? = object : NsdManager.ResolveListener {
+                        override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {}
+                        override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+                            val port = serviceInfo.port
+                            val serviceName = serviceInfo.serviceName
+                            val hostAddress = serviceInfo.host.hostAddress
+                            val message = Message.obtain()
+                            message.what = 1
+                            message.obj = serviceInfo.toString()
+                            mHandler!!.sendMessage(message)
+                            Log.e(
+                                TAG,
+                                "onServiceResolved Resolved: host:$hostAddress:$port ----- serviceName: $serviceName"
+                            )
+                            resolveList.add(" host:$hostAddress:$port")
+                            //TODO establish network connection
+                        }
+                    }
+
                     mNsdManager!!.resolveService(serviceInfo, mResolverListener)
-                }
             }
 
             override fun onServiceLost(serviceInfo: NsdServiceInfo) {
                 Log.e(TAG, "onServiceLost(): serviceInfo=$serviceInfo")
                 discoveryList.remove(serviceInfo.toString())
-            }
-        }
-    }
-
-    /**
-     * Parse the NsdServiceInfo found
-     */
-    private fun initializeResolveListener() {
-        mResolverListener = object : NsdManager.ResolveListener {
-            override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {}
-            override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                val port = serviceInfo.port
-                val serviceName = serviceInfo.serviceName
-                val hostAddress = serviceInfo.host.hostAddress
-                val message = Message.obtain()
-                message.what = 1
-                message.obj = serviceInfo.toString()
-                mHandler!!.sendMessage(message)
-                Log.e(
-                    TAG,
-                    "onServiceResolved Resolved: host:$hostAddress:$port ----- serviceName: $serviceName"
-                )
-                resolveList.add(" host:$hostAddress:$port")
-                //TODO establish network connection
             }
         }
     }

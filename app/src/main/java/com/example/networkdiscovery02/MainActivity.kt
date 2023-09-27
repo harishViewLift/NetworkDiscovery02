@@ -2,10 +2,14 @@ package com.example.networkdiscovery02
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.io.IOException
+import java.net.InetAddress
+import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity() {
     var clientMessage: TextView? = null
@@ -19,7 +23,8 @@ class MainActivity : AppCompatActivity() {
     private var nsd_server_name = "WhySystem"
     private val nsd_server_port = 8088
     val LOCAL_DOMAIN = "local."
-    val SERVICES_DOMAIN = "_services._dns-sd._udp"
+    val SERVICES_DOMAIN = "_services."
+//    val SERVICES_DOMAIN = "_services._dns-sd._udp"
 
     private val SERVICE_TYPE = "_mynsd._tcp"
 
@@ -36,6 +41,33 @@ class MainActivity : AppCompatActivity() {
 
 //        nsdServerManager = NsdServerManager.getInstance(this)
 //        nsdServerManager!!.registerNsdServer(nsd_server_name)
+
+//        val inetAddress = InetAddress.getByName("139.5.254.14")
+//
+//        val name = inetAddress.canonicalHostName
+//
+////        val subnet = scanSubNet("192.168.1.")
+////        val data = subnet
+    }
+
+    fun scanSubNet(subnet: String): ArrayList<String>? {
+        val hosts = ArrayList<String>()
+        var inetAddress: InetAddress? = null
+        for (i in 1..9) {
+            Log.d(NsdClient.TAG, "Trying: $subnet$i")
+            try {
+                inetAddress = InetAddress.getByName(subnet + i.toString())
+                if (inetAddress.isReachable(1000)) {
+                    hosts.add(inetAddress.hostName)
+                    Log.d(NsdClient.TAG, inetAddress.hostName)
+                }
+            } catch (e: UnknownHostException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return hosts
     }
 
     private fun initUI() {
