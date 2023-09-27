@@ -6,14 +6,8 @@ import android.os.Handler
 import android.util.Log
 import com.example.networkdiscovery02.NsdClient.IServerFound
 
-/**
- * author:why
- * created on: 2019/4/28 15:17
- * description:
- */
 class NsdClientManager private constructor(
     private val context: Context,
-    private val mHandler: Handler
 ) {
     /**
      * Nsd Client search
@@ -37,7 +31,7 @@ class NsdClientManager private constructor(
 
             override fun onServerFail() {}
         })
-        nsdClient!!.startNSDClient(mHandler)
+        nsdClient!!.startNSDClient()
     }
 
     companion object {
@@ -52,11 +46,11 @@ class NsdClientManager private constructor(
          * @param handler
          * @return
          */
-        fun getInstance(context: Context, handler: Handler): NsdClientManager? {
+        fun getInstance(context: Context): NsdClientManager? {
             if (mNsdClientManager == null) {
                 synchronized(NsdClientManager::class.java) {
                     if (mNsdClientManager == null) {
-                        mNsdClientManager = NsdClientManager(context, handler)
+                        mNsdClientManager = NsdClientManager(context)
                     }
                 }
             }

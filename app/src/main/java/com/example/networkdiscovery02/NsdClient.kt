@@ -28,14 +28,12 @@ class NsdClient(
 //    private val NSD_SERVER_TYPE = "_http._tcp."
     private var mDiscoveryListener: DiscoveryListener? = null
     var mNsdManager: NsdManager? = null
-    private var mHandler: Handler? = null
     private val discoveryList = ArrayList<String>()
     private val resolveList = ArrayList<String>()
 
-    fun startNSDClient(handler: Handler?) {
+    fun startNSDClient() {
         object : Thread() {
             override fun run() {
-                mHandler = handler
                 mNsdManager = mContext.getSystemService(Context.NSD_SERVICE) as NsdManager
                 initializeDiscoveryListener() //Initialize the listener
 
@@ -88,7 +86,6 @@ class NsdClient(
                             val message = Message.obtain()
                             message.what = 1
                             message.obj = serviceInfo.toString()
-                            mHandler!!.sendMessage(message)
                             Log.e(
                                 TAG,
                                 "onServiceResolved Resolved: host:$hostAddress:$port ----- serviceName: $serviceName"
