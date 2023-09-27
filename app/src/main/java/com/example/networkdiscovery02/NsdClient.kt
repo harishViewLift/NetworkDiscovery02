@@ -76,7 +76,7 @@ class NsdClient(
              * @param serviceInfo
              */
             override fun onServiceFound(serviceInfo: NsdServiceInfo) {
-                Log.e(TAG, "onServiceFound: $serviceInfo")
+                Log.e(TAG, "onServiceFound: Host : ${serviceInfo.serviceName}, ")
                 discoveryList.add(serviceInfo.toString())
                 //According to the defined name of our server, specify the NsdServiceInfo to be parsed
                     var mResolverListener: NsdManager.ResolveListener? = object : NsdManager.ResolveListener {

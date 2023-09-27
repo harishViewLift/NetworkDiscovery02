@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
     var clientMessage: TextView? = null
     var serverTitle: TextView? = null
     var newNsdServerView: EditText? = null
-    var nsdServerManager: NsdServerManager? = null
-
     /**
      * Register the name and port of the NSD service. This can set the default fixed address, which is used by the client to obtain the server address and port through NSD_SERVER_NAME filtering.
      */
@@ -38,16 +36,6 @@ class MainActivity : AppCompatActivity() {
         val client: NsdClientManager? = NsdClientManager.getInstance(this, handler)
         client?.searchNsdServer(SERVICES_DOMAIN)
 //        client?.searchNsdServer("_airplay._tcp.")
-
-//        nsdServerManager = NsdServerManager.getInstance(this)
-//        nsdServerManager!!.registerNsdServer(nsd_server_name)
-
-//        val inetAddress = InetAddress.getByName("139.5.254.14")
-//
-//        val name = inetAddress.canonicalHostName
-//
-////        val subnet = scanSubNet("192.168.1.")
-////        val data = subnet
     }
 
     fun scanSubNet(subnet: String): ArrayList<String>? {
@@ -82,21 +70,6 @@ class MainActivity : AppCompatActivity() {
      *
      * @param view
      */
-    fun resetServerName(view: View?) {
-        nsd_server_name = newNsdServerView!!.text.toString()
-        serverTitle!!.text = "Nsd server----$nsd_server_name"
-        nsdServerManager!!.registerNsdServer(nsd_server_name)
-    }
-
-    fun unRegister(view: View?) {
-        nsdServerManager!!.unRegisterNsdServer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        nsdServerManager!!.unRegisterNsdServer()
-    }
-
     companion object {
         private const val TAG = "ServerWhy"
     }
